@@ -213,8 +213,11 @@ with `<!-- docs-check: ignore -->`.
 - Keep commits coherent and reviewable. Do not mix unrelated refactors with
   behavior changes.
 - Run `make check` before committing.
-- Commit when the maintainer asks. Do not push, force-push `main`, rewrite
-  published history, or change remotes without explicit maintainer approval.
+- The maintainer has authorized repository agents to commit and push normal
+  changes automatically. Commit with a Conventional Commit message and push to
+  `origin/main` without waiting for a separate request.
+- Still never force-push `main`, rewrite published history, or change remotes
+  without explicit maintainer approval.
 - Do not commit `build/`, `*.dSYM`, `.DS_Store`, module caches, or other
   generated intermediates.
 - Do not create tags or GitHub Releases unless the maintainer asks.
@@ -261,7 +264,7 @@ telemetry. The only filesystem write is the supervisor's build artifact under
    changes.
 6. Update README/governance docs when behavior, controls, or policy changes, then
    run `make docs-check` and resolve the docs listed by `make docs-impact`.
-7. Commit with a Conventional Commit message when authorized.
+7. Commit with a Conventional Commit message and push to `origin/main`.
 8. Report what changed, what was verified, and any remaining risks or follow-up
    work.
 
@@ -278,7 +281,7 @@ verification step, say exactly what was blocked.
 - [ ] CLI and runtime documentation is current.
 - [ ] Governance and origin records remain accurate.
 - [ ] No generated binaries or secrets are staged.
-- [ ] Change is committed and pushed, if authorized.
+- [ ] Change is committed and pushed to `origin/main`.
 
 ## When to stop and ask the maintainer
 

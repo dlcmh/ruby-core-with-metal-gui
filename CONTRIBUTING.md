@@ -129,8 +129,9 @@ A contribution is ready when:
 6. Open a pull request describing the change, verification performed, and any
    known limitations.
 
-Allowed direct pushes by repository agents are defined in `AGENTS.md`. Human
-contributors should use pull requests unless the maintainer says otherwise.
+Repository agents are authorized to commit and push normal changes directly to
+`main`; see `AGENTS.md`. Human contributors should use pull requests unless the
+maintainer says otherwise.
 
 ## Reporting bugs
 

@@ -112,6 +112,19 @@ canonical remote is `origin`:
 <git@github.com:dlcmh/ruby-core-with-metal-gui.git>. The canonical browse URL is
 <https://github.com/dlcmh/ruby-core-with-metal-gui>.
 
+## Automatic commit and push directive
+
+On 2026-10-21, after the governance baseline was committed, the maintainer
+directed: "you shall auto commit and push from now on - record this directive
+somewhere aprropriate". The spelling is preserved because this is a quotation.
+
+This authorizes repository agents to commit and push normal changes to
+`origin/main` without a separate request. It supersedes the earlier
+"commit when the maintainer asks" phrasing. Destructive operations —
+force-pushing, rewriting published history, or changing the canonical remote —
+still require explicit approval, as recorded in [AGENTS.md](../AGENTS.md) and
+[GOVERNANCE.md](../GOVERNANCE.md).
+
 ## Record maintenance
 
 - Do not edit the **Original request** quotation.

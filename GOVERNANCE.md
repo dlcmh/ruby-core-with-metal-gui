@@ -145,8 +145,10 @@ no preferences and writes no runtime data beyond the compiled service under
 - `origin` is the canonical GitHub remote over SSH:
   <git@github.com:dlcmh/ruby-core-with-metal-gui.git>
 - `main` tracks `origin/main`.
+- Repository agents are authorized to commit and push normal changes to `main`
+  automatically; no per-change request is required.
 - Force-pushing, rewriting published history, changing the canonical remote, or
-  adding another release remote requires maintainer approval.
+  adding another release remote requires explicit maintainer approval.
 - Agents follow the commit and push rules in [AGENTS.md](AGENTS.md).
 
 ## Dependency policy
