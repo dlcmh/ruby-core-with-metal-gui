@@ -9,6 +9,7 @@ file. When dates are equal, the most recently added question comes first.
 
 | Question | Last updated | Covers |
 | --- | --- | --- |
+| [Can this demo break the internet?](can-this-demo-break-the-internet.md) | 2026-10-21 | The post-launch take, what is solid, and the path to a Ruby-scripted renderer |
 | [How does the Ruby core supervise the Metal service?](how-the-ruby-core-supervises-the-service.md) | 2026-10-21 | Argument parsing, build cache, spawn, signals, and exit status |
 | [How are the window and renderer built?](how-the-window-and-renderer-are-built.md) | 2026-10-21 | `AppDelegate`, `MTKView`, `Renderer`, uniforms, and the draw call |
 | [How are the shaders embedded and compiled?](how-the-shaders-are-embedded-and-compiled.md) | 2026-10-21 | `shaderSource`, runtime `makeLibrary`, and struct alignment |
