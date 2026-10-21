@@ -1,8 +1,17 @@
-# ruby-core-with-metal-gui
+# Ruby Core · Metal
 
-A deliberately small demo of a Ruby process launching a native Metal rendering
-service. The Ruby core supervises the service; a Swift + MetalKit executable
-owns the window and draws one rotating square at 60 fps.
+A deliberately small demonstration of a Ruby process supervising a native macOS
+rendering service. The Ruby core owns the process lifecycle; a Swift + MetalKit
+executable owns the window and draws one rotating square at 60 fps. There are no
+gems, no Swift packages, no Xcode project, and no runtime assets.
+
+Canonical source: <https://github.com/dlcmh/ruby-core-with-metal-gui>
+
+## Requirements
+
+- macOS 13 or newer on a Metal-capable Mac
+- Xcode Command Line Tools, providing `swiftc`
+- Ruby 2.6 or newer (the system Ruby is sufficient)
 
 ## Run
 
@@ -17,27 +26,84 @@ The first launch compiles `metal/service.swift` with `swiftc` into
 changed. Close the window or press Ctrl-C in the terminal to stop both the
 service and the Ruby core.
 
-Requirements: macOS with Metal support, the Xcode Command Line Tools (for
-`swiftc`), and Ruby. There are no gems or other dependencies.
+| Command | Effect |
+| --- | --- |
+| `ruby core.rb` | Build if needed, then launch at the default `0.9` rad/s |
+| `ruby core.rb --speed 1.6` | Launch at the given finite angular velocity |
+| `ruby core.rb --help` | Print usage without compiling or opening a window |
+
+Invalid or missing speed values print usage to stderr and exit non-zero.
 
 ## Layout
 
 ```text
-core.rb                 Ruby core: builds, launches, and supervises the service
-metal/service.swift     AppKit window, Metal pipeline, embedded shaders
-build/                  Generated executable (ignored by git)
+core.rb                 Ruby core: parses arguments, builds, launches, supervises
+metal/service.swift     AppKit window, MetalKit view, Metal pipeline, embedded shaders
+Docs/                   origin, design, Q&A, and decision records
+scripts/                verification gate, CLI smoke checks, documentation checker
+build/                  Generated binary and module cache (ignored by git)
+AGENTS.md               Operating instructions for coding agents
+CONTRIBUTING.md         Contribution workflow and quality bar
+GOVERNANCE.md           Decision-making, release, and licensing policy
+SECURITY.md             Vulnerability reporting and privacy posture
 ```
 
 ## How it works
 
-1. `core.rb` checks the source timestamp, compiles the Swift service when
-   needed, then starts it with `Process.spawn`.
-2. The Swift service creates an 800×600 `NSWindow` backed by an `MTKView`.
-3. A tiny vertex shader rotates a four-vertex triangle strip around its center;
-   the fragment shader fills it with a single orange color. The vertex shader
-   corrects for window aspect ratio and the 60 fps draw loop updates the angle.
-4. Ruby forwards `INT`/`TERM` to the service and waits for it to exit. Closing
-   the window terminates the service, which in turn ends the Ruby core.
+1. [`core.rb`](core.rb) (`RubyMetalCore.run`) validates the command line, compiles
+   the service when the source is newer than the binary, and starts it with
+   `Process.spawn`.
+2. The supervisor forwards `INT` and `TERM`, waits for the child, and exits with
+   its status. Closing the window therefore ends both processes.
+3. [`metal/service.swift`](metal/service.swift) (`Renderer`) creates an 800 × 600
+   `NSWindow` backed by an `MTKView` and a single Metal render pipeline.
+4. A four-vertex triangle strip is rotated by a uniform angle. The shader corrects
+   for the drawable aspect ratio, so the square stays square when the window is
+   resized.
+5. The shader source is embedded as a Swift string and compiled by Metal at
+   launch, so there are no `.metal` files or resource bundles.
 
-The shader source is embedded as a Swift string so there are no `.metal` build
-steps or resource files to manage.
+The rotation integrates elapsed time with a clamped delta, so it does not depend
+on the display refresh rate.
+
+## Verify
+
+```sh
+make check
+```
+
+The gate runs:
+
+1. `ruby -c core.rb`
+2. `ruby scripts/check_core.rb` — CLI and failure-path smoke checks
+3. `swiftc -typecheck -warnings-as-errors` for the service
+4. `python3 scripts/check_docs.py` — links, anchors, and cited symbols
+
+A typecheck cannot validate the shader because it compiles at runtime. After
+changing shaders, rendering, windowing, timing, or lifecycle code, run
+`ruby core.rb` and confirm the window appears, the square rotates, resizing keeps
+it square, and closing the window returns to the prompt.
+
+## Documentation
+
+| Document | Purpose |
+| --- | --- |
+| [AGENTS.md](AGENTS.md) | Operating rules and invariants for coding agents |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Build, verification, and contribution workflow |
+| [GOVERNANCE.md](GOVERNANCE.md) | Decision-making, releases, and licensing |
+| [SECURITY.md](SECURITY.md) | Vulnerability reporting and privacy posture |
+| [Docs/PROJECT_ORIGIN.md](Docs/PROJECT_ORIGIN.md) | Commissioning record and scope decisions |
+| [Docs/RUBY_METAL_DESIGN.md](Docs/RUBY_METAL_DESIGN.md) | Architecture and rationale |
+| [Docs/QnA/README.md](Docs/QnA/README.md) | Focused implementation questions |
+| [Docs/Refactoring/README.md](Docs/Refactoring/README.md) | Recorded design decisions |
+
+Documentation cites files and symbols rather than line numbers. `make docs-check`
+validates those references; `make docs-impact` lists the docs affected by the
+current diff.
+
+## License
+
+No open-source license has been selected for this repository. Default copyright
+applies; see [GOVERNANCE.md](GOVERNANCE.md). AppKit, Metal, MetalKit, and
+QuartzCore are Apple frameworks used under the macOS SDK terms. This project is
+not affiliated with or endorsed by Apple.
